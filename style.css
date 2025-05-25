@@ -1,26 +1,26 @@
-/* === ベース設定 === */
 body {
   font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
   margin: 0;
   padding: 0;
-  background: linear-gradient(135deg, #e3f2fd, #fce4ec);
+  background: linear-gradient(135deg, #e0f7fa, #f3e5f5, #fff8e1);
+  background-size: 600% 600%;
+  animation: bgMove 20s ease infinite;
   color: #2c3e50;
   line-height: 1.6;
-  animation: fadeIn 1.2s ease-in-out;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+@keyframes bgMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-/* === ヘッダー === */
 header {
-  background: #6c5ce7;
+  background: linear-gradient(to right, #6a11cb, #2575fc);
   color: white;
   padding: 40px 20px;
   text-align: center;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -29,19 +29,12 @@ header {
 header h1 {
   margin: 0;
   font-size: 2.8em;
-  letter-spacing: 2px;
   animation: slideDown 0.8s ease-out;
 }
 
 @keyframes slideDown {
-  from {
-    transform: translateY(-30px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  from { transform: translateY(-30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 nav {
@@ -56,22 +49,21 @@ nav a {
   font-size: 1.1em;
   padding: 8px 16px;
   border-radius: 24px;
-  transition: background 0.4s ease;
   background-color: rgba(255, 255, 255, 0.1);
+  transition: all 0.4s ease;
 }
 
 nav a:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
 }
 
-/* === メイン === */
 main {
   padding: 60px 20px;
   max-width: 960px;
   margin: 0 auto;
 }
 
-/* === セクションカード === */
 section {
   margin-bottom: 40px;
   background: white;
@@ -83,35 +75,43 @@ section {
   opacity: 0;
 }
 
-section#tools {
-  animation-delay: 0.5s;
-}
-section#contact {
-  animation-delay: 1s;
-}
+section#tools { animation-delay: 0.5s; }
+section#contact { animation-delay: 1s; }
 
 @keyframes floatUp {
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  to { transform: translateY(0); opacity: 1; }
 }
 
-/* === ツールリスト === */
 section#tools ul {
   list-style: none;
   padding: 0;
 }
 
 section#tools li {
-  background: #f1f8ff;
   margin: 16px 0;
   padding: 20px 24px;
-  border-left: 6px solid #74b9ff;
   border-radius: 12px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   position: relative;
   overflow: hidden;
+  background: linear-gradient(135deg, #fce4ec, #e8f5e9);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border-left: 8px solid #81ecec;
+}
+
+section#tools li:nth-child(2) {
+  border-left-color: #ff7675;
+  background: linear-gradient(135deg, #fff0f5, #f0f4c3);
+}
+
+section#tools li:nth-child(3) {
+  border-left-color: #74b9ff;
+  background: linear-gradient(135deg, #e3f2fd, #ede7f6);
+}
+
+section#tools li:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 section#tools li::after {
@@ -121,18 +121,13 @@ section#tools li::after {
   right: -100px;
   width: 100px;
   height: 100%;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.3);
   transform: skewX(-30deg);
-  transition: right 0.3s ease;
+  transition: right 0.4s ease;
 }
 
 section#tools li:hover::after {
   right: 100%;
-}
-
-section#tools li:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
 section#tools a {
@@ -148,7 +143,6 @@ section#tools a:hover {
   text-decoration: underline;
 }
 
-/* === お問い合わせ === */
 section#contact a {
   color: #6c5ce7;
   text-decoration: none;
@@ -159,7 +153,6 @@ section#contact a:hover {
   text-decoration: underline;
 }
 
-/* === フッター === */
 footer {
   text-align: center;
   padding: 24px;
