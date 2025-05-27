@@ -1,1 +1,378 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>英単語ランダムクイズ</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f0f8ff;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+    }
+    .controls {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .controls button {
+      margin: 5px;
+      padding: 8px 16px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .word {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 10px auto;
+      padding: 10px 15px;
+      background: #ffffff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      max-width: 500px;
+    }
+    .japanese {
+      font-weight: bold;
+      font-size: 1.1rem;
+      flex: 1;
+    }
+    .english {
+      color: #333;
+      margin-left: 10px;
+      flex: 1;
+      display: none;
+    }
+    .toggle-btn {
+      margin-left: 10px;
+      padding: 5px 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>英単語クイズ（ランダム13単語）</h1>
+  <div class="controls">
+    <button onclick="showAll()">全表示</button>
+    <button onclick="hideAll()">全非表示</button>
+    <button onclick="reloadWords()">再生成</button>
+  </div>
+  <div id="words-container"></div>
 
+  <script>
+   const wordList = [
+  { en: "hi", ja: "やあ" },
+  { en: "I", ja: "私は（主語）" },
+  { en: "am", ja: "～です（be動詞）" },
+  { en: "sorry", ja: "ごめん" },
+  { en: "not", ja: "ではない" },
+  { en: "Ms.", ja: "～さん（女性）" },
+  { en: "Mr.", ja: "～さん（男性）" },
+  { en: "you", ja: "あなたは（主語）" },
+  { en: "are", ja: "～です（be動詞）" },
+  { en: "nice", ja: "すてきな" },
+
+  { en: "to", ja: "～へ（to 場所・人、to 動詞）" },
+  { en: "meet", ja: "会う" },
+  { en: "in", ja: "なかに、に（広い場所、1か月以上の時間、朝、昼、夕方）" },
+  { en: "the", ja: "その～（話題のものに）" },
+  { en: "the U.S.", ja: "アメリカ" },
+  { en: "too", ja: "～も" },
+  { en: "kind", ja: "親切な" },
+  { en: "from", ja: "～出身の、～から" },
+  { en: "yes", ja: "はい" },
+  { en: "no", ja: "いいえ" },
+
+  { en: "where", ja: "どこ" },
+  { en: "Australia", ja: "オーストラリア" },
+  { en: "a", ja: "１つの、1人の" },
+  { en: "new", ja: "新しい" },
+  { en: "student", ja: "生徒、学生" },
+  { en: "thank", ja: "感謝する" },
+  { en: "have", ja: "持つ、ある、飼う" },
+  { en: "an", ja: "１つの、1人の、（母音の名詞）" },
+  { en: "apple", ja: "りんご" },
+  { en: "don’t", ja: "～しない" },
+
+  { en: "like", ja: "好きです" },
+  { en: "orange", ja: "オレンジ" },
+  { en: "play", ja: "スポーツをする、演奏する" },
+  { en: "soccer", ja: "サッカー" },
+  { en: "every", ja: "毎" },
+  { en: "day", ja: "日" },
+  { en: "let’s", ja: "～しましょう" },
+  { en: "piano", ja: "ピアノ" },
+  { en: "look", ja: "見る" },
+  { en: "at", ja: "～を、に（地点、時刻など）" },
+
+  { en: "my", ja: "私の（所有）" },
+  { en: "notebook", ja: "ノート" },
+  { en: "great", ja: "すごい" },
+  { en: "player", ja: "選手" },
+  { en: "sport", ja: "スポーツ" },
+  { en: "do", ja: "する" },
+  { en: "what", ja: "何" },
+  { en: "basketball", ja: "バスケットボール" },
+  { en: "very", ja: "とても" },
+  { en: "much", ja: "たいへん、たくさん（数えられない）" },
+
+  { en: "when", ja: "いつ" },
+  { en: "study", ja: "勉強する" },
+  { en: "clean", ja: "そうじする" },
+  { en: "room", ja: "へや" },
+  { en: "morning", ja: "朝、午前" },
+  { en: "Sunday", ja: "日曜日" },
+  { en: "Monday", ja: "月曜日" },
+  { en: "Friday", ja: "金曜日" },
+  { en: "Tuesday", ja: "火曜日" },
+  { en: "Thursday", ja: "木曜日" },
+
+  { en: "Saturday", ja: "土曜日" },
+  { en: "Wednesday", ja: "水曜日" },
+  { en: "How", ja: "どのように" },
+  { en: "is", ja: "～です（be動詞）" },
+  { en: "weather", ja: "天気" },
+  { en: "it", ja: "それは（主語）" },
+  { en: "it’s", ja: "それは～です（it is の短縮）" },
+  { en: "I’m", ja: "私は～です（I am の短縮）" },
+  { en: "You’re", ja: "あなたは～です（You are の短縮）" },
+  { en: "sunny", ja: "はれの" },
+
+  { en: "rainy", ja: "あめの" },
+  { en: "cloudy", ja: "くもりの" },
+  { en: "many", ja: "たくさん（数えられる）" },
+  { en: "book", ja: "本" },
+  { en: "one", ja: "１" },
+  { en: "two", ja: "２" },
+  { en: "three", ja: "３" },
+  { en: "four", ja: "４" },
+  { en: "five", ja: "５" },
+  { en: "cat", ja: "ネコ" },
+
+  { en: "brother", ja: "兄、弟" },
+  { en: "sister", ja: "姉、妹" },
+  { en: "children", ja: "子供たち" },
+  { en: "drink", ja: "飲む" },
+  { en: "tea", ja: "紅茶" },
+  { en: "eat", ja: "食べる" },
+  { en: "lunch", ja: "昼食" },
+  { en: "cook", ja: "料理する" },
+  { en: "dinner", ja: "夕食" },
+  { en: "make", ja: "作る" },
+
+  { en: "breakfast", ja: "朝食" },
+  { en: "open", ja: "開ける" },
+  { en: "door", ja: "ドア" },
+  { en: "read", ja: "読む" },
+  { en: "comic", ja: "マンガの" },
+  { en: "watch", ja: "見る、腕時計" },
+  { en: "TV", ja: "テレビ" },
+  { en: "please", ja: "お願いします" },
+  { en: "speak", ja: "話す" },
+  { en: "English", ja: "英語" },
+
+  { en: "can", ja: "できる" },
+  { en: "sing", ja: "歌う" },
+  { en: "song", ja: "うた" },
+  { en: "can’t", ja: "できない" },
+  { en: "guitar", ja: "ギター" },
+  { en: "well", ja: "上手に" },
+  { en: "that", ja: "あれは、あの（遠くを指す）" },
+  { en: "that’s", ja: "あれは～です（that is の短縮）" },
+  { en: "practice", ja: "練習する" },
+  { en: "hard", ja: "ねっしんに" },
+
+  { en: "with", ja: "～といっしょに" },
+  { en: "your", ja: "あなたの（所有）" },
+  { en: "friend", ja: "友だち" },
+  { en: "swim", ja: "泳ぐ" },
+  { en: "rice", ja: "ごはん、米" },
+  { en: "and", ja: "～と、そして" },
+  { en: "curry", ja: "カレー" },
+  { en: "get", ja: "手に入れる、着く" },
+  { en: "for", ja: "～のために" },
+  { en: "here", ja: "ここで" },
+
+  { en: "or", ja: "それとも、あるいは" },
+  { en: "go", ja: "行く" },
+  { en: "hamburger", ja: "ハンバーガー" },
+  { en: "juice", ja: "ジュース、果汁" },
+  { en: "six", ja: "６" },
+  { en: "seven", ja: "７" },
+  { en: "eight", ja: "８" },
+  { en: "hundred", ja: "１００" },
+  { en: "nine", ja: "９" },
+  { en: "ten", ja: "１０" },
+
+  { en: "this", ja: "これは、この（近くをさす）" },
+  { en: "bird", ja: "鳥" },
+  { en: "plug", ja: "コンセント" },
+  { en: "isn’t", ja: "ではない" },
+  { en: "ink", ja: "インク" },
+  { en: "stick", ja: "棒" },
+  { en: "first", ja: "最初、まず、第1" },
+  { en: "put", ja: "置く" },
+  { en: "water", ja: "水" },
+  { en: "into", ja: "～のなかへ" },
+
+  { en: "flower", ja: "花" },
+  { en: "then", ja: "それから、その時" },
+  { en: "cookbook", ja: "料理本" },
+  { en: "two", ja: "２" },
+  { en: "table", ja: "テーブル" },
+  { en: "chair", ja: "いす" },
+  { en: "next", ja: "つぎの" },
+  { en: "big", ja: "大きい" },
+  { en: "small", ja: "小さい" },
+  { en: "hot", ja: "熱い" },
+
+  { en: "cold", ja: "冷たい" },
+  { en: "red", ja: "赤い" },
+  { en: "blue", ja: "青い" },
+  { en: "yellow", ja: "黄色い" },
+  { en: "green", ja: "緑色の" },
+  { en: "black", ja: "黒い" },
+  { en: "white", ja: "白い" },
+  { en: "pink", ja: "ピンク" },
+  { en: "orange", ja: "オレンジ色" },
+  { en: "purple", ja: "紫色" },
+
+  { en: "brown", ja: "茶色" },
+  { en: "gray", ja: "グレー" },
+  { en: "shirt", ja: "シャツ" },
+  { en: "pants", ja: "ズボン" },
+  { en: "hat", ja: "帽子" },
+  { en: "shoes", ja: "くつ" },
+  { en: "coat", ja: "コート" },
+  { en: "dress", ja: "ドレス" },
+  { en: "skirt", ja: "スカート" },
+  { en: "tie", ja: "ネクタイ" },
+
+  { en: "bag", ja: "かばん" },
+  { en: "watch", ja: "時計" },
+  { en: "glasses", ja: "メガネ" },
+  { en: "umbrella", ja: "かさ" },
+  { en: "phone", ja: "電話" },
+  { en: "computer", ja: "コンピューター" },
+  { en: "book", ja: "本" },
+  { en: "pen", ja: "ペン" },
+  { en: "pencil", ja: "えんぴつ" },
+  { en: "eraser", ja: "消しゴム" },
+
+  { en: "notebook", ja: "ノート" },
+  { en: "desk", ja: "机" },
+  { en: "chair", ja: "いす" },
+  { en: "school", ja: "学校" },
+  { en: "classroom", ja: "教室" },
+  { en: "teacher", ja: "先生" },
+  { en: "student", ja: "学生" },
+  { en: "friend", ja: "友達" },
+  { en: "class", ja: "授業" },
+  { en: "lesson", ja: "レッスン" },
+
+  { en: "homework", ja: "宿題" },
+  { en: "test", ja: "テスト" },
+  { en: "exam", ja: "試験" },
+  { en: "grade", ja: "成績" },
+  { en: "schoolbag", ja: "ランドセル" },
+  { en: "bus", ja: "バス" },
+  { en: "train", ja: "電車" },
+  { en: "car", ja: "車" },
+  { en: "bicycle", ja: "自転車" },
+  { en: "walk", ja: "歩く" },
+
+  { en: "run", ja: "走る" },
+  { en: "jump", ja: "ジャンプする" },
+  { en: "swim", ja: "泳ぐ" },
+  { en: "fly", ja: "飛ぶ" },
+  { en: "sit", ja: "座る" },
+  { en: "stand", ja: "立つ" },
+  { en: "sleep", ja: "寝る" },
+  { en: "wake", ja: "起きる" },
+  { en: "eat", ja: "食べる" },
+  { en: "drink", ja: "飲む" },
+
+  { en: "see", ja: "見る" },
+  { en: "hear", ja: "聞く" },
+  { en: "smell", ja: "匂いをかぐ" },
+  { en: "touch", ja: "触る" },
+  { en: "taste", ja: "味わう" },
+  { en: "think", ja: "考える" },
+  { en: "know", ja: "知っている" },
+  { en: "understand", ja: "理解する" },
+  { en: "learn", ja: "学ぶ" },
+  { en: "remember", ja: "覚える" },
+
+  { en: "forget", ja: "忘れる" },
+  { en: "help", ja: "助ける" }
+];
+
+
+    const container = document.getElementById("words-container");
+
+    function getRandomWords(list, count) {
+      const shuffled = [...list].sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, count);
+    }
+
+    function toggle(button) {
+      const en = button.parentElement.querySelector(".english");
+      if (en.style.display === "none" || en.style.display === "") {
+        en.style.display = "block";
+        button.textContent = "隠す";
+      } else {
+        en.style.display = "none";
+        button.textContent = "表示";
+      }
+    }
+
+    function addWordToContainer(word) {
+      const div = document.createElement("div");
+      div.className = "word";
+
+      const ja = document.createElement("div");
+      ja.className = "japanese";
+      ja.textContent = word.ja;
+
+      const en = document.createElement("div");
+      en.className = "english";
+      en.textContent = word.en;
+
+      const btn = document.createElement("button");
+      btn.className = "toggle-btn";
+      btn.textContent = "表示";
+      btn.onclick = function () {
+        toggle(this);
+      };
+
+      div.appendChild(ja);
+      div.appendChild(en);
+      div.appendChild(btn);
+
+      container.appendChild(div);
+    }
+
+    function showAll() {
+      document.querySelectorAll(".english").forEach(el => el.style.display = "block");
+      document.querySelectorAll(".toggle-btn").forEach(btn => btn.textContent = "隠す");
+    }
+
+    function hideAll() {
+      document.querySelectorAll(".english").forEach(el => el.style.display = "none");
+      document.querySelectorAll(".toggle-btn").forEach(btn => btn.textContent = "表示");
+    }
+
+    function reloadWords() {
+      container.innerHTML = "";
+      const words = getRandomWords(wordList, 13);
+      words.forEach(addWordToContainer);
+    }
+
+    // 初期表示
+    reloadWords();
+  </script>
+</body>
+</html>
