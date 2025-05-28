@@ -21,7 +21,7 @@
 <body>
   <header>
     <h1>Study Tool</h1>
-    <nav aria-label="メインナビゲーション">
+    <nav>
       <a href="#tools">Typing</a>
       <a href="#utils">便利ツール</a>
       <a href="#contact">お問い合わせ</a>
@@ -53,10 +53,13 @@
     <section id="utils">
       <h2>便利ツール</h2>
       <ul>
-        <li>
-          <a href="english/" target="_blank" rel="noopener noreferrer">
-            英語帳
-          </a>
+        <li class="dropdown">
+          <a href="javascript:void(0)" id="dropdownToggle">英語帳 ▾</a>
+          <div class="dropdown-content" id="dropdownMenu">
+            <a href="english/1nen.html" target="_blank" rel="noopener noreferrer">1年</a>
+            <a href="english/2nen.html" target="_blank" rel="noopener noreferrer">2年</a>
+            <a href="english/3nen.html" target="_blank" rel="noopener noreferrer">3年</a>
+          </div>
         </li>
       </ul>
     </section>
@@ -70,5 +73,24 @@
   <footer>
     <p>&copy; 2025 Study Tool. All Rights Reserved.</p>
   </footer>
+
+  <!-- クリック式ドロップダウン用スクリプト -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const toggle = document.getElementById("dropdownToggle");
+      const menu = document.getElementById("dropdownMenu");
+
+      toggle.addEventListener("click", function(event) {
+        event.preventDefault();
+        menu.style.display = (menu.style.display === "block") ? "none" : "block";
+      });
+
+      document.addEventListener("click", function(event) {
+        if (!toggle.contains(event.target) && !menu.contains(event.target)) {
+          menu.style.display = "none";
+        }
+      });
+    });
+  </script>
 </body>
 </html>
