@@ -1,1 +1,395 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>中２英語帳単語表示ツール</title>
+  <style>
+
+     body {
+      font-family: sans-serif;
+      background: #f0f8ff;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+    }
+    .controls {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .controls button {
+      margin: 5px;
+      padding: 8px 16px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .word {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 10px auto;
+      padding: 10px 15px;
+      background: #ffffff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      max-width: 500px;
+    }
+    .japanese {
+      font-weight: bold;
+      font-size: 1.1rem;
+      flex: 1;
+    }
+    .english {
+      color: #333;
+      margin-left: 10px;
+      flex: 1;
+      display: none;
+    }
+    .toggle-btn {
+      margin-left: 10px;
+      padding: 5px 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+     p {
+      text-align: center;}
+  </style>
+</head>
+<body>
+  <h1>中２英単語表示（14単語）</h1>
+  <p>頑張り帳用の単語をランダムで表示することができるツールです。</p>
+  <div class="controls">
+    <button onclick="showAll()">全表示</button>
+    <button onclick="hideAll()">全非表示</button>
+    <button onclick="reloadWords()">再生成</button>
+  </div>
+  <div id="words-container"></div>
+
+  <script>
+    // （wordListは省略）
+    const wordList = [
+  { en: "move", ja: "引っ越す・動く" },
+  { en: "Canada", ja: "カナダ" },
+  { en: "stage", ja: "舞台" },
+  { en: "leave", ja: "出発する・置き忘れる" },
+  { en: "plan", ja: "計画・計画する" },
+  { en: "fishing", ja: "つり" },
+  { en: "now", ja: "今" },
+  { en: "umbrella", ja: "傘" },
+  { en: "soon", ja: "すぐに" },
+  { en: "won’t", ja: "will not （～しないだろう）" },
+  { en: "forget", ja: "忘れる" },
+  { en: "email", ja: "メールをする" },
+  { en: "call", ja: "電話をする" },
+  { en: "sleep", ja: "ねむる" },
+  { en: "bake", ja: "焼く" },
+  { en: "science", ja: "理科" },
+  { en: "together", ja: "いっしょに" },
+  { en: "if", ja: "もし～なら" },
+  { en: "classmate", ja: "クラスメート" },
+  { en: "think", ja: "考える" },
+  { en: "beautiful", ja: "美しい" },
+  { en: "hear", ja: "聞こえる" },
+  { en: "hiking", ja: "ハイキング" },
+  { en: "find", ja: "見つける　わかる" },
+  { en: "early", ja: "早く" },
+  { en: "hope", ja: "望む" },
+  { en: "must", ja: "しなけれなならない" },
+  { en: "will", ja: "だろう" },
+  { en: "seat", ja: "席" },
+  { en: "belt", ja: "ベルト" },
+  { en: "fire", ja: "火" },
+  { en: "anything", ja: "どんなもの　何かのもの" },
+  { en: "forest", ja: "森" },
+  { en: "bring", ja: "持ってくる" },
+  { en: "garbage", ja: "生ごみ" },
+  { en: "check", ja: "確かめる" },
+  { en: "rule", ja: "ルール" },
+  { en: "have to", ja: "しなければならない" },
+  { en: "finish", ja: "終わらせる" },
+  { en: "bathroom", ja: "ふろ・トイレ" },
+  { en: "exactly", ja: "まさにそのとおり" },
+  { en: "pet", ja: "ペット" },
+  { en: "quiet", ja: "静かな" },
+  { en: "rabbit", ja: "うさぎ" },
+  { en: "should", ja: "すべきだ" },
+  { en: "hello", ja: "もしもし" },
+  { en: "may", ja: "してもいい　かもしれない" },
+  { en: "wrong", ja: "間違っている" },
+  { en: "number", ja: "番号" },
+  { en: "fun", ja: "楽しい・楽しみ" },
+  { en: "job", ja: "仕事" },
+  { en: "building", ja: "建物" },
+  { en: "hobby", ja: "趣味" },
+  { en: "paint", ja: "えがく　いろぬり" },
+  { en: "corn", ja: "とうもろこし" },
+  { en: "something", ja: "何かのもの" },
+  { en: "cold", ja: "冷たい" },
+  { en: "expensive", ja: "高価な" },
+  { en: "club", ja: "クラブ" },
+  { en: "enjoy", ja: "楽しむ" },
+  { en: "score", ja: "点数" },
+  { en: "wash", ja: "洗う" },
+  { en: "collect", ja: "集める" },
+  { en: "old", ja: "古い" },
+  { en: "card", ja: "カード" },
+  { en: "surprised", ja: "おどろいた" },
+  { en: "news", ja: "ニュース　知らせ" },
+  { en: "sad", ja: "悲しい" },
+  { en: "accident", ja: "事故" },
+  { en: "brought", ja: "bring の過去・過去分詞" },
+  { en: "need", ja: "必要とする" },
+  { en: "gave", ja: "give の過去" },
+  { en: "ring", ja: "ゆびわ　鳴る" },
+  { en: "taste", ja: "味がする　好み" },
+  { en: "shelf", ja: "たな" },
+  { en: "hit", ja: "当たる" },
+  { en: "try", ja: "ためす" },
+  { en: "each", ja: "それぞれの" },
+  { en: "country", ja: "国" },
+  { en: "culture", ja: "文化" },
+  { en: "engineer", ja: "エンジニア" },
+  { en: "present", ja: "おくりもの" },
+  { en: "invent", ja: "発明する" },
+  { en: "farm", ja: "農場" },
+  { en: "machine", ja: "機械" },
+  { en: "dream", ja: "ゆめ" },
+  { en: "decide", ja: "決める" },
+  { en: "trick", ja: "いたずら　芸" },
+  { en: "cousin", ja: "いとこ" },
+  { en: "steal", ja: "ぬすむ" },
+  { en: "eel", ja: "うなぎ" },
+  { en: "thought", ja: "think の過去・過去分詞" },
+  { en: "sick", ja: "病気の" },
+  { en: "later", ja: "あとで" },
+  { en: "probably", ja: "おそらく" },
+  { en: "die", ja: "死ぬ" },
+  { en: "say said", ja: "言う" },
+  { en: "strange", ja: "奇妙な" },
+  { en: "happen", ja: "起きる" },
+  { en: "weak", ja: "弱い" },
+  { en: "fell fall", ja: "fall の過去　　落ちる" },
+  { en: "ground", ja: "地面" },
+  { en: "learn", ja: "学ぶ" },
+  { en: "place", ja: "配置する" },
+  { en: "remember", ja: "覚えている" },
+  { en: "drop", ja: "落とす" },
+  { en: "egg", ja: "たまご" },
+  { en: "blame", ja: "責める" },
+  { en: "sound", ja: "聞こえる　音" },
+  { en: "delicious", ja: "おいしい" },
+  { en: "well", ja: "（病気から）元気な" },
+  { en: "become", ja: "なる" },
+  { en: "while", ja: "～の間" },
+  { en: "action", ja: "行動" },
+  { en: "important", ja: "重要な" },
+  { en: "window", ja: "窓" },
+  { en: "way", ja: "方法　道" },
+  { en: "order", ja: "注文する" },
+  { en: "stake", ja: "ステーキ" },
+  { en: "recommend", ja: "すすめる" },
+  { en: "share", ja: "分かち合う" },
+  { en: "big", ja: "大きい" },
+  { en: "enough", ja: "十分な" },
+  { en: "medium", ja: "中間の" },
+  { en: "else", ja: "他に" },
+  { en: "than", ja: "より" },
+  { en: "young", ja: "若い" },
+  { en: "large", ja: "大きい" },
+  { en: "more", ja: "many の比較級" },
+  { en: "better", ja: "good の比較級" },
+  { en: "panda", ja: "パンダ" },
+  { en: "most", ja: "many の最上級" },
+  { en: "wonderful", ja: "すばらしい" },
+  { en: "month", ja: "月" },
+  { en: "best", ja: "good の最上級" },
+  { en: "idea", ja: "考え" },
+  { en: "nature", ja: "自然" },
+  { en: "example", ja: "例" },
+  { en: "interesting", ja: "面白い" },
+  { en: "storm", ja: "嵐" },
+  { en: "robot", ja: "ロボット" },
+  { en: "coin", ja: "コイン" },
+  { en: "heavy", ja: "重い" },
+  { en: "yogurt", ja: "ヨーグルト" },
+  { en: "lid", ja: "ふた" },
+  { en: "train", ja: "列車" },
+  { en: "loud", ja: "大声で" },
+  { en: "noise", ja: "騒音" },
+  { en: "enter", ja: "入る" },
+  { en: "tunnel", ja: "トンネル" },
+  { en: "helpful", ja: "役立つ" },
+  { en: "solve", ja: "解く　解決する" },
+  { en: "problem", ja: "問題" },
+  { en: "fly", ja: "飛ぶ" },
+  { en: "sky", ja: "空" },
+  { en: "useful", ja: "役立つ" },
+  { en: "rescue", ja: "助ける" },
+  { en: "narrow", ja: "せまい" },
+  { en: "space", ja: "空間　宇宙" },
+  { en: "fresh", ja: "新鮮な" },
+  { en: "fruit", ja: "くだもの" },
+  { en: "jelly", ja: "ゼリー" },
+  { en: "sell sold", ja: "売る　sell の過去・過去分詞" },
+  { en: "stationary", ja: "文房具" },
+  { en: "sung", ja: "sing の過去分詞" },
+  { en: "political", ja: "政治の" },
+  { en: "issue", ja: "問題" },
+  { en: "message", ja: "メッセージ" },
+  { en: "through", ja: "を通して" },
+  { en: "temple", ja: "寺" },
+  { en: "build built", ja: "建てる　過去・過去分詞" },
+  { en: "letter", ja: "手紙" },
+  { en: "write wrote written", ja: "書く　過去形　　過去分詞" },
+  { en: "send sent", ja: "送る　過去・過去分詞" },
+  { en: "taken", ja: "takeの過去分詞" },
+  { en: "national", ja: "国民の" },
+  { en: "holiday", ja: "休日" },
+  { en: "greatly", ja: "非常に" },
+  { en: "influence", ja: "影響を与える" },
+  { en: "celebrate", ja: "祝う" },
+  { en: "bridge", ja: "橋" },
+  { en: "wood", ja: "木材" },
+  { en: "won", ja: "win の過去形" },
+  { en: "award", ja: "賞" },
+  { en: "president", ja: "大統領　社長" },
+  { en: "million", ja: "100万" },
+  { en: "over", ja: "以上" },
+  { en: "thousand", ja: "千" },
+  { en: "practical", ja: "実用的な" },
+  { en: "fail", ja: "失敗する" },
+  { en: "bad", ja: "悪い" },
+  { en: "lucky", ja: "幸運な" },
+  { en: "failure", ja: "失敗" },
+  { en: "never", ja: "決して～しない　一度もない" },
+  { en: "challenge", ja: "挑戦する" },
+  { en: "himself", ja: "彼自身" },
+  { en: "air", ja: "空" },
+  { en: "above", ja: "上の方" },
+  { en: "zone", ja: "区域" },
+  { en: "plane", ja: "ひこうき" },
+  { en: "suddenly", ja: "突然" },
+  { en: "came", ja: "come の過去" },
+  { en: "ship", ja: "船" },
+  { en: "met", ja: "meet の過去" },
+  { en: "strong", ja: "強い" },
+  { en: "typhoon", ja: "台風" },
+  { en: "nearby", ja: "近くの" },
+  { en: "village", ja: "村" },
+  { en: "survivor", ja: "生存者" },
+  { en: "friendship", ja: "友情" },
+  { en: "between", ja: "間（２つ）" },
+  { en: "still", ja: "まだ" },
+  { en: "continue", ja: "つづく" },
+  { en: "river", ja: "川" },
+  { en: "along", ja: "そって" },
+  { en: "among", ja: "間（３つ以上）" },
+  { en: "behind", ja: "背後" },
+  { en: "in front of", ja: "前" },
+  { en: "around", ja: "まわり" },
+  { en: "out of", ja: "の外" },
+  { en: "just", ja: "ちょうど" },
+  { en: "eaten", ja: "eatの過去分詞" },
+  { en: "already", ja: "すでに" },
+  { en: "read", ja: "readの過去・過去分詞" },
+  { en: "yet", ja: "まだ　もう" },
+  { en: "gotten", ja: "getの過去分詞" },
+  { en: "pop", ja: "大衆の　ポップ" },
+  { en: "like", ja: "のような" },
+  { en: "seen", ja: "see の過去分詞" },
+  { en: "before", ja: "以前" },
+  { en: "such", ja: "そのような" },
+  { en: "twice", ja: "2回" },
+  { en: "gone", ja: "goの過去分詞" },
+  { en: "boyfriend", ja: "男友達" },
+  { en: "foreign", ja: "外国の" },
+  { en: "start", ja: "始める" },
+  { en: "attract", ja: "ひきつける" },
+  { en: "similar", ja: "似ている" },
+  { en: "situation", ja: "状況" },
+  { en: "Europe", ja: "ヨーロッパ" },
+  { en: "gateway", ja: "いりぐち" },
+  { en: "attention", ja: "注意" },
+  { en: "passenger", ja: "乗客" },
+  { en: "flight", ja: "航空便" },
+  { en: "cancel", ja: "中止する" },
+  { en: "boarding", ja: "搭乗" },
+  { en: "change", ja: "変更する" },
+  { en: "announcement", ja: "お知らせ" },
+  { en: "since", ja: "～以来" },
+  { en: "hotel", ja: "ホテル" },
+  { en: "hospital", ja: "病院" },
+  { en: "wait", ja: "待つ" },
+  { en: "half", ja: "半分" },
+  { en: "hour", ja: "時間" },
+  { en: "shower", ja: "シャワー　にわか雨" }
+];
+
+
+    const container = document.getElementById("words-container");
+
+    function getRandomWords(list, count) {
+      const shuffled = [...list].sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, count);
+    }
+
+    function toggle(button) {
+      const en = button.parentElement.querySelector(".english");
+      if (en.style.display === "none" || en.style.display === "") {
+        en.style.display = "block";
+        button.textContent = "隠す";
+      } else {
+        en.style.display = "none";
+        button.textContent = "表示";
+      }
+    }
+
+    function addWordToContainer(word) {
+      const div = document.createElement("div");
+      div.className = "word";
+
+      const ja = document.createElement("div");
+      ja.className = "japanese";
+      ja.textContent = word.ja;
+
+      const en = document.createElement("div");
+      en.className = "english";
+      en.textContent = word.en;
+
+      const btn = document.createElement("button");
+      btn.className = "toggle-btn";
+      btn.textContent = "表示";
+      btn.onclick = function () {
+        toggle(this);
+      };
+
+      div.appendChild(ja);
+      div.appendChild(en);
+      div.appendChild(btn);
+
+      container.appendChild(div);
+    }
+
+    function showAll() {
+      document.querySelectorAll(".english").forEach(el => el.style.display = "block");
+      document.querySelectorAll(".toggle-btn").forEach(btn => btn.textContent = "隠す");
+    }
+
+    function hideAll() {
+      document.querySelectorAll(".english").forEach(el => el.style.display = "none");
+      document.querySelectorAll(".toggle-btn").forEach(btn => btn.textContent = "表示");
+    }
+
+    function reloadWords() {
+      container.innerHTML = "";
+      const words = getRandomWords(wordList, 14);  // ←ここを14に変更しました
+      words.forEach(addWordToContainer);
+    }
+
+    // 初期表示
+    reloadWords();
+  </script>
+</body>
+</html>
 
