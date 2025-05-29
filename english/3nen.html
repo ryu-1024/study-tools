@@ -3,7 +3,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <title>中２英語帳単語表示ツール</title>
+  <title>中３英語帳単語表示ツール</title>
   <style>
 
      body {
@@ -58,7 +58,7 @@
   </style>
 </head>
 <body>
-  <h1>中２英単語表示（14単語）</h1>
+  <h1>中3英単語表示（15単語）</h1>
   <p>頑張り帳用の単語をランダムで表示することができるツールです。</p>
   <div class="controls">
     <button onclick="showAll()">全表示</button>
@@ -633,7 +633,7 @@
 
     function reloadWords() {
       container.innerHTML = "";
-      const words = getRandomWords(wordList, 14);  // ←ここを14に変更しました
+      const words = getRandomWords(wordList, 15);  // ←ここを14に変更しました
       words.forEach(addWordToContainer);
     }
 
